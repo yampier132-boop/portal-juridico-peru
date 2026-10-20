@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" fill="#fff"/>
+  <path d="M13 15h38a5 5 0 0 1 5 5v24a5 5 0 0 1-5 5H31L18 58v-9h-5a5 5 0 0 1-5-5V20a5 5 0 0 1 5-5Z" fill="none" stroke="#34d399" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+  <text x="32" y="40" fill="#34d399" font-family="Georgia, serif" font-size="27" font-weight="700" text-anchor="middle">§</text>
+</svg>

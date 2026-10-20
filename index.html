@@ -381,6 +381,38 @@
       width: 100%;
     }
 
+    .buscador-publicaciones {
+      display: grid;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .buscador-publicaciones label {
+      color: var(--suave);
+      font-size: 0.84rem;
+    }
+
+    .buscador-publicaciones input {
+      width: 100%;
+      padding: 11px 12px;
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      background: var(--superficie);
+      color: var(--texto);
+      font: inherit;
+    }
+
+    .buscador-publicaciones input:focus {
+      outline: 2px solid var(--acento);
+      outline-offset: 2px;
+    }
+
+    .estado-busqueda {
+      margin: 12px 0 0;
+      color: var(--suave);
+      font-size: 0.86rem;
+    }
+
     .publicacion-enlace {
       display: block;
       padding-top: 12px;
@@ -403,6 +435,16 @@
       color: var(--suave);
       font-size: 0.76rem;
       line-height: 1.5;
+    }
+
+    .publicacion-enlace img {
+      display: block;
+      width: 100%;
+      max-height: 180px;
+      margin-bottom: 12px;
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      object-fit: cover;
     }
 
     .lista-publicaciones-recientes .publicacion-enlace {
@@ -626,6 +668,12 @@
     <div class="secciones-contenido">
       <section class="seccion-contenido" aria-labelledby="recientes-titulo">
         <h2 id="recientes-titulo">Recién publicado</h2>
+        <div class="buscador-publicaciones" role="search">
+          <label for="buscar-publicaciones">Buscar por tema, título o etiqueta</label>
+          <input id="buscar-publicaciones" type="search" autocomplete="off">
+        </div>
+        <p class="estado-busqueda" id="estado-busqueda" aria-live="polite" hidden></p>
+        <div class="lista-publicaciones" id="resultados-busqueda" aria-live="polite" hidden></div>
         <div class="vacio-contenido" id="recientes-vacio">
           <strong>Próximamente</strong>
           <p class="nota-vista">Aquí aparecerán las publicaciones más recientes del portal.</p>
@@ -737,18 +785,80 @@
     function crearEnlacePublicacion(publicacion) {
       const enlace = document.createElement("a");
       enlace.className = "publicacion-enlace";
-      enlace.href = `publicacion.html?id=${encodeURIComponent(publicacion.id)}`;
+      let destino = `publicacion.html?id=${encodeURIComponent(publicacion.id)}`;
+      if (typeof publicacion.publicUrl === "string") {
+        try {
+          const url = new URL(publicacion.publicUrl, window.location.href);
+          if (url.origin === window.location.origin) destino = url.toString();
+        } catch {
+          // Keep the existing safe fallback for malformed publication URLs.
+        }
+      }
+      enlace.href = destino;
 
+      if (publicacion.coverUrl) {
+        const portada = document.createElement("img");
+        portada.src = publicacion.coverUrl;
+        portada.alt = publicacion.coverAlt || "";
+        portada.loading = "lazy";
+        enlace.append(portada);
+      }
       const titulo = document.createElement("strong");
       titulo.textContent = publicacion.title;
       const resumen = document.createElement("small");
       resumen.textContent = publicacion.summary;
       const meta = document.createElement("small");
-      meta.textContent = `${publicacion.typeName} · ${publicacion.materia} · ${publicacion.publishedAt}`;
+      const materiasPublicacion = Array.isArray(publicacion.materias)
+        ? publicacion.materias.join(", ")
+        : publicacion.materia;
+      meta.textContent = `${publicacion.typeName} · ${materiasPublicacion} · ${publicacion.publishedAt}`;
 
       enlace.append(titulo, resumen, meta);
       return enlace;
     }
+
+    let publicacionesDisponibles = [];
+
+    function normalizarTexto(valor) {
+      return String(valor)
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLocaleLowerCase("es-PE");
+    }
+
+    function actualizarBusqueda() {
+      const consulta = normalizarTexto(document.querySelector("#buscar-publicaciones").value.trim());
+      const resultados = document.querySelector("#resultados-busqueda");
+      const estado = document.querySelector("#estado-busqueda");
+      resultados.replaceChildren();
+      if (!consulta) {
+        resultados.hidden = true;
+        estado.hidden = true;
+        return;
+      }
+
+      const terminos = consulta.split(/\s+/);
+      const encontrados = publicacionesDisponibles.filter((publicacion) => {
+        const contenido = [
+          publicacion.title,
+          publicacion.summary,
+          publicacion.typeName,
+          publicacion.materias,
+          publicacion.materia,
+          ...Object.values(publicacion.details || {}),
+        ].flat().join(" ");
+        const indice = normalizarTexto(contenido);
+        return terminos.every((termino) => indice.includes(termino));
+      });
+      encontrados.slice(0, 8).forEach((publicacion) => resultados.append(crearEnlacePublicacion(publicacion)));
+      resultados.hidden = encontrados.length === 0;
+      estado.hidden = false;
+      estado.textContent = encontrados.length
+        ? `${encontrados.length} resultado${encontrados.length === 1 ? "" : "s"}${encontrados.length > 8 ? "; se muestran los primeros 8" : ""}.`
+        : "No encontramos publicaciones con esas palabras.";
+    }
+
+    document.querySelector("#buscar-publicaciones").addEventListener("input", actualizarBusqueda);
 
     async function cargarPublicaciones() {
       const respuesta = await fetch("contenido/publicaciones.json", { cache: "no-cache" });
@@ -756,9 +866,10 @@
       const publicaciones = await respuesta.json();
       if (!Array.isArray(publicaciones)) throw new Error("El archivo de publicaciones no tiene el formato esperado.");
 
-      const ordenadas = publicaciones
+      publicacionesDisponibles = publicaciones
         .filter((publicacion) => publicacion && typeof publicacion.id === "string")
         .sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
+      const ordenadas = publicacionesDisponibles;
 
       const recientes = document.querySelector("#publicaciones-recientes");
       if (ordenadas.length) {

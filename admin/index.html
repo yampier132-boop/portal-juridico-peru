@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Administración | De Ley</title>
+  <link rel="stylesheet" href="admin.css">
+  <script type="module" src="admin.js"></script>
+</head>
+<body>
+  <main class="contenedor">
+    <a class="volver" href="https://yampier132-boop.github.io/portal-juridico-peru/">← Volver a De Ley</a>
+    <header class="encabezado">
+      <p class="etiqueta">Área de administración</p>
+      <h1>Publicaciones</h1>
+      <p class="intro">Prepara contenido uniforme según su tipo. Al publicar, aparecerá en el portal cuando GitHub Pages termine de actualizarse.</p>
+    </header>
+
+    <section class="panel" id="acceso" aria-labelledby="acceso-titulo">
+      <h2 id="acceso-titulo">Inicia sesión para continuar</h2>
+      <p>Solo la cuenta de GitHub autorizada por el administrador puede publicar. No escribas tu contraseña en este sitio.</p>
+      <button class="boton-principal" id="iniciar-sesion" type="button">Iniciar sesión con GitHub</button>
+      <p class="mensaje" id="mensaje-acceso" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="panel" id="editor" hidden aria-labelledby="editor-titulo">
+      <div class="editor-encabezado">
+        <div>
+          <p class="etiqueta">Sesión autorizada</p>
+          <h2 id="editor-titulo">Crear una publicación</h2>
+          <p id="usuario-actual" class="ayuda"></p>
+        </div>
+        <button class="boton-secundario" id="cerrar-sesion" type="button">Cerrar sesión</button>
+      </div>
+      <div class="aviso">
+        <strong>Antes de publicar:</strong> comprueba las fuentes, la vigencia de la información y los permisos de uso del material. No publiques datos personales o información reservada.
+      </div>
+      <form id="formulario">
+        <label class="campo">
+          <span>Tipo de publicación</span>
+          <select id="tipo" name="tipo" required></select>
+        </label>
+        <p class="ayuda" id="descripcion-tipo"></p>
+        <div class="campos-comunes" id="campos-comunes"></div>
+        <fieldset class="campos-especificos">
+          <legend id="titulo-campos">Información específica</legend>
+          <div id="campos-especificos"></div>
+        </fieldset>
+        <div class="acciones">
+          <button class="boton-principal" id="publicar" type="submit">Publicar</button>
+          <button class="boton-secundario" id="limpiar" type="reset">Limpiar formulario</button>
+        </div>
+        <p class="mensaje" id="mensaje-publicacion" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+    <footer>De Ley · Portal jurídico peruano</footer>
+  </main>
+</body>
+</html>

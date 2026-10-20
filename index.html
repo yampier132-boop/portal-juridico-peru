@@ -782,6 +782,14 @@
       actualizarBotonTema(tema);
     });
 
+    function formatearFecha(valor) {
+      const fecha = new Date(`${valor}T00:00:00`);
+      const meses = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+      return Number.isNaN(fecha.valueOf())
+        ? valor
+        : `${fecha.getDate()} de ${meses[fecha.getMonth()]} de ${fecha.getFullYear()}`;
+    }
+
     function crearEnlacePublicacion(publicacion) {
       const enlace = document.createElement("a");
       enlace.className = "publicacion-enlace";
@@ -811,7 +819,7 @@
       const materiasPublicacion = Array.isArray(publicacion.materias)
         ? publicacion.materias.join(", ")
         : publicacion.materia;
-      meta.textContent = `${publicacion.typeName} · ${materiasPublicacion} · ${publicacion.publishedAt}`;
+      meta.textContent = `${publicacion.typeName} · ${materiasPublicacion} · ${formatearFecha(publicacion.publishedAt)}`;
 
       enlace.append(titulo, resumen, meta);
       return enlace;
@@ -870,6 +878,11 @@
         .filter((publicacion) => publicacion && typeof publicacion.id === "string")
         .sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
       const ordenadas = publicacionesDisponibles;
+      const etiquetaBuscada = new URLSearchParams(window.location.search).get("buscar");
+      if (etiquetaBuscada) {
+        document.querySelector("#buscar-publicaciones").value = etiquetaBuscada;
+        actualizarBusqueda();
+      }
 
       const recientes = document.querySelector("#publicaciones-recientes");
       if (ordenadas.length) {

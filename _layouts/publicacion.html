@@ -1,4 +1,10 @@
 {% assign p = page.publication %}
+{% assign body_count = 0 %}
+{% if p.details.problemaJuridico != empty %}{% assign body_count = body_count | plus: 1 %}{% endif %}
+{% if p.details.criterio != empty %}{% assign body_count = body_count | plus: 1 %}{% endif %}
+{% if p.details.analisis != empty %}{% assign body_count = body_count | plus: 1 %}{% endif %}
+{% if p.details.referenciasApa != empty %}{% assign body_count = body_count | plus: 1 %}{% endif %}
+{% capture canonical_url %}{{ site.url }}{{ site.baseurl }}{{ page.url }}{% endcapture %}
 <!doctype html>
 <html lang="es">
 <head>
@@ -10,7 +16,7 @@
   <meta property="og:locale" content="es_PE">
   <meta property="og:title" content="{{ p.title | escape }} | De Ley">
   <meta property="og:description" content="{{ p.summary | strip_html | normalize_whitespace | truncate: 180 | escape }}">
-  <meta property="og:url" content="{{ p.publicUrl | escape }}">
+  <meta property="og:url" content="{{ canonical_url | strip | escape }}">
   <meta property="og:image" content="{{ p.coverUrl | escape }}">
   <meta property="og:image:alt" content="{{ p.coverAlt | escape }}">
   {% for tag in p.details.etiquetas %}
@@ -20,7 +26,7 @@
   <meta name="twitter:title" content="{{ p.title | escape }} | De Ley">
   <meta name="twitter:description" content="{{ p.summary | strip_html | normalize_whitespace | truncate: 180 | escape }}">
   <meta name="twitter:image" content="{{ p.coverUrl | escape }}">
-  <link rel="canonical" href="{{ p.publicUrl | escape }}">
+  <link rel="canonical" href="{{ canonical_url | strip | escape }}">
   <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
   <link rel="stylesheet" href="{{ '/publicacion.css' | relative_url }}">
   <title>{{ p.title | escape }} | De Ley</title>
@@ -45,35 +51,101 @@
       <p class="etiqueta">{{ p.typeName | escape }}</p>
       <h1>{{ p.title | escape }}</h1>
       <p class="resumen">{{ p.summary | escape }}</p>
-      <div class="meta">
-        <span>{{ p.author | escape }}</span>
-        <span>{{ p.materias | join: ", " | escape }}</span>
-        <time datetime="{{ p.publishedAt | escape }}">{{ p.publishedAt | date: "%d/%m/%Y" }}</time>
-      </div>
+      <p class="linea-autor">
+        Por {{ p.author | escape }} · {{ p.materias | join: ", " | escape }} · {% include fecha-es.html fecha=p.publishedAt %}
+      </p>
       <img class="portada-articulo" src="{{ p.coverUrl | escape }}" alt="{{ p.coverAlt | escape }}">
-      {% for field in p.detailFields %}
-        {% if field.value != empty %}
-          <section class="detalle">
-            <h2>{{ field.label | escape }}</h2>
-            {% if field.label == "Etiquetas o palabras clave" %}
-              <div class="etiquetas">
-                {% for tag in field.value %}
-                  <span class="etiqueta-palabra">{{ tag | escape }}</span>
-                {% endfor %}
-              </div>
-            {% elsif field.type == "url" %}
-              <p><a href="{{ field.value | escape }}" target="_blank" rel="noopener noreferrer">{{ field.value | escape }}</a></p>
-            {% else %}
-              <p>{{ field.value | join: ", " | escape }}</p>
+      {% if p.details.etiquetas.size > 0 %}
+        <nav class="etiquetas" aria-label="Etiquetas de la publicación">
+          {% for tag in p.details.etiquetas %}
+            <a class="etiqueta-palabra" href="{{ '/' | relative_url }}?buscar={{ tag | uri_escape }}#buscar-publicaciones">{{ tag | escape }}</a>
+          {% endfor %}
+        </nav>
+      {% endif %}
+      {% if p.type == "jurisprudencia" %}
+      <div class="estructura-articulo">
+        <aside class="barra-lateral" aria-label="Ficha de la decisión">
+          <div class="ficha-fija">
+            <section class="ficha-decision">
+              <h2>Datos de la decisión</h2>
+              <dl>
+                {% if p.details.organo != empty %}<div><dt>Órgano</dt><dd>{{ p.details.organo | escape }}</dd></div>{% endif %}
+                {% if p.details.expediente != empty %}<div><dt>Expediente</dt><dd>{{ p.details.expediente | escape }}</dd></div>{% endif %}
+                {% if p.details.instancia != empty %}<div><dt>Instancia</dt><dd>{{ p.details.instancia | escape }}</dd></div>{% endif %}
+                {% if p.details.firmeza == "firme" %}<div><dt>Firmeza</dt><dd>Sí, es firme</dd></div>
+                {% elsif p.details.firmeza == "no-firme" %}<div><dt>Firmeza</dt><dd>No, puede ser impugnada</dd></div>
+                {% elsif p.details.firmeza == "no-determinado" %}<div><dt>Firmeza</dt><dd>No se ha podido confirmar</dd></div>{% endif %}
+                {% if p.details.fechaDecision != empty %}
+                  <div><dt>Fecha de la decisión</dt><dd><time datetime="{{ p.details.fechaDecision | escape }}">{% include fecha-es.html fecha=p.details.fechaDecision %}</time></dd></div>
+                {% endif %}
+              </dl>
+            </section>
+            {% if body_count >= 3 %}
+              <nav class="tabla-contenido" aria-label="Tabla de contenido">
+                <h2>En esta página</h2>
+                <ol>
+                  {% if p.details.problemaJuridico != empty %}<li><a href="#problema-juridico">Problema jurídico</a></li>{% endif %}
+                  {% if p.details.criterio != empty %}<li><a href="#criterio">Criterio</a></li>{% endif %}
+                  {% if p.details.analisis != empty %}<li><a href="#analisis">Análisis</a></li>{% endif %}
+                  {% if p.details.referenciasApa != empty %}<li><a href="#referencias">Referencias</a></li>{% endif %}
+                </ol>
+              </nav>
             {% endif %}
+          </div>
+        </aside>
+        <div class="cuerpo-articulo">
+          {% if p.details.problemaJuridico != empty %}
+            <section class="detalle texto-articulo" id="problema-juridico">
+              <h2>Problema jurídico</h2><p>{{ p.details.problemaJuridico | escape }}</p>
+            </section>
+          {% endif %}
+          {% if p.details.criterio != empty %}
+            <section class="detalle texto-articulo" id="criterio">
+              <h2>Criterio</h2><p>{{ p.details.criterio | escape }}</p>
+            </section>
+          {% endif %}
+          {% if p.details.analisis != empty %}
+            <section class="detalle texto-articulo" id="analisis">
+              <h2>Análisis</h2><p>{{ p.details.analisis | escape }}</p>
+            </section>
+          {% endif %}
+          {% if p.details.referenciasApa != empty %}
+            <section class="detalle texto-articulo" id="referencias">
+              <h2>Referencias</h2><p>{{ p.details.referenciasApa | escape }}</p>
+            </section>
+          {% endif %}
+          {% if p.details.fuenteOficial != empty or p.details.fuenteSecundaria != empty %}
+            <details class="fuentes-articulo">
+              <summary>Fuentes de consulta</summary>
+              {% if p.details.fuenteOficial != empty %}
+                <p><strong>Fuente oficial:</strong> <a href="{{ p.details.fuenteOficial | escape }}" target="_blank" rel="noopener noreferrer">{{ p.details.fuenteOficial | escape }}</a></p>
+              {% endif %}
+              {% if p.details.fuenteSecundaria != empty %}
+                <p><strong>Fuente secundaria:</strong> <a href="{{ p.details.fuenteSecundaria | escape }}" target="_blank" rel="noopener noreferrer">{{ p.details.fuenteSecundaria | escape }}</a></p>
+              {% endif %}
+            </details>
+          {% endif %}
+        </div>
+      </div>
+      {% else %}
+        {% for field in p.detailFields %}
+          {% if field.value != empty %}
+            <section class="detalle">
+              <h2>{{ field.label | escape }}</h2>
+              {% if field.type == "url" %}
+                <p><a href="{{ field.value | escape }}" target="_blank" rel="noopener noreferrer">{{ field.value | escape }}</a></p>
+              {% else %}
+                <p>{{ field.value | join: ", " | escape }}</p>
+              {% endif %}
+            </section>
+          {% endif %}
+        {% endfor %}
+        {% if p.sourceUrl != empty %}
+          <section class="detalle">
+            <h2>{{ p.sourceName | default: "Fuente principal" | escape }}</h2>
+            <p><a href="{{ p.sourceUrl | escape }}" target="_blank" rel="noopener noreferrer">{{ p.sourceUrl | escape }}</a></p>
           </section>
         {% endif %}
-      {% endfor %}
-      {% if p.sourceUrl != empty %}
-        <section class="detalle">
-          <h2>{{ p.sourceName | default: "Fuente principal" | escape }}</h2>
-          <p><a href="{{ p.sourceUrl | escape }}" target="_blank" rel="noopener noreferrer">{{ p.sourceUrl | escape }}</a></p>
-        </section>
       {% endif %}
       <p class="nota">Este contenido es informativo. Verifica las normas y fuentes vigentes y evalúa cada caso concreto con el criterio profesional correspondiente.</p>
     </article>

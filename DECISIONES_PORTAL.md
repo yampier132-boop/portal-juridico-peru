@@ -15,6 +15,7 @@ Este documento guarda los acuerdos del proyecto para consultarlos antes de hacer
 
 - La dirección visual será minimalista y AMOLED, con una presentación moderna, clara y ordenada.
 - El color de acento será verde esmeralda (`#34d399`), sobre el fondo negro AMOLED.
+- La tipografía será Inter en todo el sitio. La fuente se guardará en el repositorio con su licencia OFL para no depender de un proveedor externo; las fuentes del sistema serán la alternativa si no se puede cargar.
 - Linear sirve como referencia de claridad y organización, y Raycast como referencia de modernidad. Son inspiración general: no se copiarán sus marcas, diseños, textos ni imágenes.
 - El repositorio ya tiene una primera página publicada en GitHub Pages. Por ahora, esa página es una versión inicial con textos provisionales.
 - El modo noche para documentos PDF es una función futura; no forma parte de la página inicial actual.
@@ -29,7 +30,6 @@ Este documento guarda los acuerdos del proyecto para consultarlos antes de hacer
 
 - Nombre definitivo del portal y dominio.
 - Texto inicial definitivo de la página.
-- Tipografía.
 - Categorías que tendrá el portal.
 - Forma de publicar y organizar artículos y documentos.
 

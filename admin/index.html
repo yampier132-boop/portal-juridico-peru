@@ -36,6 +36,9 @@
       <div class="aviso">
         <strong>Antes de publicar:</strong> comprueba las fuentes, la vigencia de la información y los permisos de uso del material. No publiques datos personales o información reservada.
       </div>
+      <p class="aviso aviso-privacidad" id="aviso-portada" hidden>
+        La imagen se genera fuera de este panel. El prompt se prepara con los datos del caso para que lo copies en una herramienta de imágenes con IA. No incluyas nombres de personas ni datos confidenciales en el prompt.
+      </p>
       <form id="formulario">
         <label class="campo">
           <span>Tipo de publicación</span>
@@ -47,6 +50,26 @@
           <legend id="titulo-campos">Información específica</legend>
           <div id="campos-especificos"></div>
         </fieldset>
+        <section class="portada" id="portada-ia" hidden aria-labelledby="portada-titulo">
+          <h3 id="portada-titulo">Imagen de portada para compartir</h3>
+          <p class="ayuda">Prepara el prompt, genera la imagen con una herramienta de IA y luego súbela aquí. Se recomienda formato horizontal de 1200 × 630 píxeles.</p>
+          <label class="campo" for="prompt-portada">
+            Prompt personalizado para generar la imagen
+            <textarea id="prompt-portada" rows="8" readonly></textarea>
+          </label>
+          <button class="boton-secundario" id="copiar-prompt" type="button">Copiar prompt</button>
+          <label class="campo" for="imagen-portada">
+            Subir la imagen generada
+            <input id="imagen-portada" name="imagenPortada" type="file" accept="image/jpeg,image/png,image/webp" required>
+            <small>JPG, PNG o WebP; máximo 4 MB. No se aceptan SVG.</small>
+          </label>
+          <label class="campo" for="texto-alternativo">
+            Descripción breve de la imagen
+            <input id="texto-alternativo" name="coverAlt" type="text" maxlength="300" required>
+            <small>Ayuda a las personas que usan lectores de pantalla y a describir la imagen al compartirla.</small>
+          </label>
+          <img class="portada-preview" id="vista-previa-portada" alt="" hidden>
+        </section>
         <div class="acciones">
           <button class="boton-principal" id="publicar" type="submit">Publicar</button>
           <button class="boton-secundario" id="limpiar" type="reset">Limpiar formulario</button>

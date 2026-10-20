@@ -11,6 +11,16 @@ function formatDate(value) {
 }
 
 function appendValue(container, value, isUrl = false) {
+  if (Array.isArray(value)) {
+    const list = document.createElement("ul");
+    value.forEach((item) => {
+      const entry = document.createElement("li");
+      entry.textContent = item;
+      list.append(entry);
+    });
+    container.append(list);
+    return;
+  }
   if (isUrl) {
     try {
       const url = new URL(value);
@@ -37,6 +47,17 @@ function displayPublication(publication) {
   if (!type) throw new Error("El tipo de publicación no está reconocido.");
 
   document.title = `${publication.title} | De Ley`;
+  const description = document.querySelector('meta[name="description"]');
+  if (description) description.content = publication.summary;
+  if (publication.coverUrl) {
+    let imageMeta = document.querySelector('meta[property="og:image"]');
+    if (!imageMeta) {
+      imageMeta = document.createElement("meta");
+      imageMeta.setAttribute("property", "og:image");
+      document.head.append(imageMeta);
+    }
+    imageMeta.content = publication.coverUrl;
+  }
   article.replaceChildren();
 
   const category = document.createElement("p");
@@ -52,13 +73,23 @@ function displayPublication(publication) {
 
   const metadata = document.createElement("div");
   metadata.className = "meta";
-  [publication.author, publication.materia, formatDate(publication.publishedAt)].forEach((value) => {
+  const materiasPublicacion = Array.isArray(publication.materias)
+    ? publication.materias.join(", ")
+    : publication.materia;
+  [publication.author, materiasPublicacion, formatDate(publication.publishedAt)].forEach((value) => {
     const item = document.createElement("span");
     item.textContent = value;
     metadata.append(item);
   });
 
   article.append(category, title, summary, metadata);
+  if (publication.coverUrl) {
+    const cover = document.createElement("img");
+    cover.className = "portada-articulo";
+    cover.src = publication.coverUrl;
+    cover.alt = publication.coverAlt || "";
+    article.append(cover);
+  }
   type.campos.forEach((field) => {
     const value = publication.details?.[field.id];
     if (!value) return;
@@ -67,7 +98,11 @@ function displayPublication(publication) {
     const heading = document.createElement("h2");
     heading.textContent = field.etiqueta;
     section.append(heading);
-    appendValue(section, value, field.tipo === "url");
+    const option = field.tipo === "select"
+      ? field.opciones?.find((item) => (typeof item === "string" ? item : item.valor) === value)
+      : null;
+    const displayedValue = typeof option === "object" && option ? option.etiqueta : value;
+    appendValue(section, displayedValue, field.tipo === "url");
     article.append(section);
   });
 

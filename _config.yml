@@ -1,3 +1,10 @@
+url: "https://yampier132-boop.github.io"
+baseurl: "/portal-juridico-peru"
+
+collections:
+  publicaciones:
+    output: true
+
 exclude:
   - admin/
   - cloudflare/

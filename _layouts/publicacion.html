@@ -1,0 +1,98 @@
+{% assign p = page.publication %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ p.summary | strip_html | normalize_whitespace | truncate: 180 | escape }}">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="De Ley">
+  <meta property="og:locale" content="es_PE">
+  <meta property="og:title" content="{{ p.title | escape }} | De Ley">
+  <meta property="og:description" content="{{ p.summary | strip_html | normalize_whitespace | truncate: 180 | escape }}">
+  <meta property="og:url" content="{{ p.publicUrl | escape }}">
+  <meta property="og:image" content="{{ p.coverUrl | escape }}">
+  <meta property="og:image:alt" content="{{ p.coverAlt | escape }}">
+  {% for tag in p.details.etiquetas %}
+    <meta property="article:tag" content="{{ tag | escape }}">
+  {% endfor %}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ p.title | escape }} | De Ley">
+  <meta name="twitter:description" content="{{ p.summary | strip_html | normalize_whitespace | truncate: 180 | escape }}">
+  <meta name="twitter:image" content="{{ p.coverUrl | escape }}">
+  <link rel="canonical" href="{{ p.publicUrl | escape }}">
+  <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
+  <link rel="stylesheet" href="{{ '/publicacion.css' | relative_url }}">
+  <title>{{ p.title | escape }} | De Ley</title>
+  <script>
+    const temaGuardado = localStorage.getItem("de-ley-tema");
+    if (temaGuardado === "claro" || temaGuardado === "oscuro") {
+      document.documentElement.dataset.tema = temaGuardado;
+    }
+  </script>
+</head>
+<body>
+  <header>
+    <a class="marca" href="{{ '/' | relative_url }}" aria-label="Ir al inicio de De Ley">
+      <img class="marca-oscuro" src="{{ '/assets/brand-de-ley-oscuro.png' | relative_url }}" alt="De Ley">
+      <img class="marca-claro" src="{{ '/assets/brand-de-ley-claro.png' | relative_url }}" alt="" aria-hidden="true">
+    </a>
+    <button id="tema" type="button" aria-label="Cambiar tema">Modo claro</button>
+  </header>
+  <main>
+    <a class="volver" href="{{ '/' | relative_url }}">← Volver al portal</a>
+    <article>
+      <p class="etiqueta">{{ p.typeName | escape }}</p>
+      <h1>{{ p.title | escape }}</h1>
+      <p class="resumen">{{ p.summary | escape }}</p>
+      <div class="meta">
+        <span>{{ p.author | escape }}</span>
+        <span>{{ p.materias | join: ", " | escape }}</span>
+        <time datetime="{{ p.publishedAt | escape }}">{{ p.publishedAt | date: "%d/%m/%Y" }}</time>
+      </div>
+      <img class="portada-articulo" src="{{ p.coverUrl | escape }}" alt="{{ p.coverAlt | escape }}">
+      {% for field in p.detailFields %}
+        {% if field.value != empty %}
+          <section class="detalle">
+            <h2>{{ field.label | escape }}</h2>
+            {% if field.label == "Etiquetas o palabras clave" %}
+              <div class="etiquetas">
+                {% for tag in field.value %}
+                  <span class="etiqueta-palabra">{{ tag | escape }}</span>
+                {% endfor %}
+              </div>
+            {% elsif field.type == "url" %}
+              <p><a href="{{ field.value | escape }}" target="_blank" rel="noopener noreferrer">{{ field.value | escape }}</a></p>
+            {% else %}
+              <p>{{ field.value | join: ", " | escape }}</p>
+            {% endif %}
+          </section>
+        {% endif %}
+      {% endfor %}
+      {% if p.sourceUrl != empty %}
+        <section class="detalle">
+          <h2>{{ p.sourceName | default: "Fuente principal" | escape }}</h2>
+          <p><a href="{{ p.sourceUrl | escape }}" target="_blank" rel="noopener noreferrer">{{ p.sourceUrl | escape }}</a></p>
+        </section>
+      {% endif %}
+      <p class="nota">Este contenido es informativo. Verifica las normas y fuentes vigentes y evalúa cada caso concreto con el criterio profesional correspondiente.</p>
+    </article>
+  </main>
+  <footer>De Ley · Portal jurídico peruano</footer>
+  <script>
+    const themeButton = document.querySelector("#tema");
+    function updateThemeButton() {
+      const isLight = document.documentElement.dataset.tema === "claro";
+      themeButton.textContent = isLight ? "Modo oscuro" : "Modo claro";
+      themeButton.setAttribute("aria-pressed", String(isLight));
+    }
+    updateThemeButton();
+    themeButton.addEventListener("click", () => {
+      const theme = document.documentElement.dataset.tema === "claro" ? "oscuro" : "claro";
+      document.documentElement.dataset.tema = theme;
+      localStorage.setItem("de-ley-tema", theme);
+      updateThemeButton();
+    });
+  </script>
+</body>
+</html>

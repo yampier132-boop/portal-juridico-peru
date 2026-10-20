@@ -16,6 +16,11 @@ Este documento guarda los acuerdos del proyecto para consultarlos antes de hacer
 - El titular provisional de la portada será «Derecho peruano, con claridad y método», para destacar el enfoque de investigación.
 - La portada aprovechará un ancho mayor y mostrará un directorio con las siete secciones principales. Mientras no haya publicaciones verificadas, se indicará claramente que el contenido está en preparación; no se crearán artículos jurídicos ficticios para llenar los espacios.
 - Las publicaciones se prepararán en un formulario con campos comunes y preguntas específicas según el tipo de contenido: Actualidad, Normas, Jurisprudencia, Modelos y formatos, Guías, Investigación u Opinión.
+- En Jurisprudencia, una publicación podrá tener varias materias; se registrarán la instancia y la firmeza con una opción para indicar que no se pudo confirmar.
+- El formulario de Jurisprudencia distinguirá la fuente oficial de una fuente secundaria, y mantendrá etiquetas y referencias bibliográficas APA 7 en campos separados.
+- La búsqueda interna del portal encontrará publicaciones por título, resumen, materias y campos de contenido, incluidas las etiquetas.
+- Las publicaciones de Jurisprudencia tendrán una imagen de portada, texto alternativo y una página individual con metadatos sociales para compartir el enlace.
+- El panel preparará un prompt de imagen personalizado con los datos editoriales del caso; la imagen se generará fuera del panel y luego se subirá como JPG, PNG o WebP. El prompt debe evitar nombres y datos confidenciales.
 - El panel de administración no se enlazará en la navegación pública. El acceso se protegerá con inicio de sesión de GitHub y una lista de autorización del lado del servidor; no se guardará una contraseña en la página.
 - Se mantendrá la web pública en GitHub Pages. Un servicio Cloudflare Worker verificará al administrador y guardará publicaciones validadas en el repositorio; GitHub Pages las mostrará al completar su despliegue.
 - La cabecera usará el logotipo tipográfico horizontal «De Ley», con subrayado verde esmeralda basado en la imagen aportada por el usuario y sin fondo. Habrá una versión legible para cada tema.
@@ -48,7 +53,6 @@ Este documento guarda los acuerdos del proyecto para consultarlos antes de hacer
 - Confirmar el nombre definitivo del portal y elegir el dominio.
 - Texto inicial definitivo de la página.
 - Categorías temáticas adicionales para organizar o filtrar el contenido.
-- Configurar Cloudflare Worker, el espacio KV para la sesión, la OAuth App de GitHub y los secretos de acceso al repositorio.
 
 ## Cómo mantener este registro
 

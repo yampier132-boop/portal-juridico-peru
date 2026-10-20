@@ -62,4 +62,12 @@ El panel de publicaciones está en `admin/` y se sirve desde un Cloudflare Worke
 
 El panel tiene campos comunes y cambia los campos específicos según el tipo de publicación: Actualidad, Normas, Jurisprudencia, Modelos y formatos, Guías, Investigación u Opinión. La validación se repite en el servidor, los enlaces deben usar HTTPS y los campos se muestran como texto para evitar que se interpreten como código.
 
+### Publicar jurisprudencia
+
+El formulario de Jurisprudencia permite marcar varias materias e incluye la instancia, el estado de firmeza, la fuente oficial, una fuente secundaria opcional, etiquetas y referencias bibliográficas en un campo separado para APA 7. Las etiquetas se guardan con la publicación y se pueden encontrar con el buscador del portal.
+
+La portada no se genera automáticamente dentro del panel: el formulario prepara un prompt personalizado para copiar en una herramienta de imágenes con IA. Revisa el texto antes de usarlo y no incluyas nombres ni datos confidenciales. Después, sube la imagen generada en formato JPG, PNG o WebP; el límite es 4 MB. Añade una descripción breve para lectores de pantalla. La recomendación es una imagen horizontal de 1200 × 630 píxeles.
+
+Al guardar la decisión, el sistema almacena la imagen en el repositorio, crea una página individual y añade metadatos Open Graph y Twitter Card. Esos metadatos se entregan como HTML estático para que WhatsApp, Facebook y LinkedIn puedan leer la portada al compartir el enlace; una etiqueta creada solo con JavaScript no sería suficiente para muchos de esos servicios.
+
 El panel no está enlazado en la navegación pública. Aunque alguien descubra su dirección, solo la cuenta de GitHub indicada en `ADMIN_GITHUB_LOGIN` puede guardar publicaciones. La sesión expira después de ocho horas. Cambiar la cuenta permitida y desplegar el Worker retira el acceso de la sesión anterior.

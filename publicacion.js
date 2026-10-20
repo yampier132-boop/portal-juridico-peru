@@ -1,7 +1,56 @@
-import { tiposPublicacion } from "./admin/schema.js";
-
 const article = document.querySelector("#contenido");
 const themeButton = document.querySelector("#tema");
+
+const etiquetasCampos = {
+  organo: "Órgano jurisdiccional",
+  expediente: "Número de expediente o resolución",
+  instancia: "Instancia",
+  firmeza: "Estado de firmeza",
+  fechaDecision: "Fecha de la decisión",
+  problemaJuridico: "Problema jurídico",
+  criterio: "Criterio o decisión principal",
+  analisis: "Análisis",
+  fuenteOficial: "Enlace a la decisión o fuente oficial",
+  fuenteSecundaria: "Enlace a una fuente secundaria",
+  etiquetas: "Etiquetas o palabras clave",
+  referenciasApa: "Referencias bibliográficas (formato APA 7)",
+  fechaHecho: "Fecha del hecho",
+  queOcurrio: "¿Qué ocurrió?",
+  relevancia: "¿Por qué es relevante?",
+  fuentes: "Fuentes y enlaces",
+  identificacion: "Número y nombre completo de la norma",
+  fechaPublicacionNorma: "Fecha de publicación de la norma",
+  fechaVigencia: "Fecha de entrada en vigencia",
+  cambios: "Cambios principales",
+  implicancias: "A quiénes y cómo podría afectar",
+  finalidad: "¿Para qué sirve este modelo?",
+  destinatario: "¿A quién está dirigido?",
+  cuandoUsar: "¿Cuándo podría utilizarse?",
+  requisitos: "Información o requisitos que deben revisarse",
+  contenidoModelo: "Contenido del modelo",
+  advertencias: "Advertencias para su adaptación",
+  fuente: "Fuente o referencia",
+  pasos: "Pasos del procedimiento",
+  plazos: "Plazos importantes",
+  dondeRealizar: "¿Dónde o ante quién se realiza?",
+  pregunta: "Pregunta de investigación",
+  metodologia: "Metodología",
+  hallazgos: "Hallazgos o argumento central",
+  limitaciones: "Alcances y limitaciones",
+  bibliografia: "Bibliografía y fuentes consultadas",
+  tesis: "Tesis o postura principal",
+  argumentos: "Argumentos y análisis",
+  referencias: "Fuentes y referencias",
+  declaracion: "Intereses o vínculos que conviene declarar",
+};
+
+const opcionesCampos = {
+  firmeza: {
+    firme: "Sí, es firme",
+    "no-firme": "No, puede ser impugnada",
+    "no-determinado": "No se ha podido confirmar",
+  },
+};
 
 function formatDate(value) {
   const date = new Date(`${value}T00:00:00`);
@@ -43,9 +92,6 @@ function appendValue(container, value, isUrl = false) {
 }
 
 function displayPublication(publication) {
-  const type = tiposPublicacion.find((item) => item.id === publication.type);
-  if (!type) throw new Error("El tipo de publicación no está reconocido.");
-
   document.title = `${publication.title} | De Ley`;
   const description = document.querySelector('meta[name="description"]');
   if (description) description.content = publication.summary;
@@ -62,7 +108,7 @@ function displayPublication(publication) {
 
   const category = document.createElement("p");
   category.className = "etiqueta";
-  category.textContent = type.nombre;
+  category.textContent = publication.typeName || publication.type || "Publicación";
 
   const title = document.createElement("h1");
   title.textContent = publication.title;
@@ -90,19 +136,15 @@ function displayPublication(publication) {
     cover.alt = publication.coverAlt || "";
     article.append(cover);
   }
-  type.campos.forEach((field) => {
-    const value = publication.details?.[field.id];
+  Object.entries(publication.details || {}).forEach(([id, value]) => {
     if (!value) return;
     const section = document.createElement("section");
     section.className = "detalle";
     const heading = document.createElement("h2");
-    heading.textContent = field.etiqueta;
+    heading.textContent = etiquetasCampos[id] || id.replace(/([A-Z])/g, " $1").replace(/^./, (first) => first.toUpperCase());
     section.append(heading);
-    const option = field.tipo === "select"
-      ? field.opciones?.find((item) => (typeof item === "string" ? item : item.valor) === value)
-      : null;
-    const displayedValue = typeof option === "object" && option ? option.etiqueta : value;
-    appendValue(section, displayedValue, field.tipo === "url");
+    const displayedValue = opcionesCampos[id]?.[value] || value;
+    appendValue(section, displayedValue, id.toLowerCase().includes("url") || id.toLowerCase().includes("fuente"));
     article.append(section);
   });
 

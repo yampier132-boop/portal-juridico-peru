@@ -1,0 +1,19 @@
+name = "de-ley-admin"
+main = "cloudflare/worker.js"
+compatibility_date = "2026-10-20"
+workers_dev = true
+
+[assets]
+directory = "./admin"
+binding = "ASSETS"
+run_worker_first = true
+
+[[kv_namespaces]]
+binding = "AUTH_KV"
+id = "REEMPLAZAR_CON_EL_ID_DE_KV"
+
+[vars]
+GITHUB_OWNER = "yampier132-boop"
+GITHUB_REPO = "portal-juridico-peru"
+GITHUB_BRANCH = "main"
+ADMIN_GITHUB_LOGIN = "REEMPLAZAR_CON_TU_USUARIO_DE_GITHUB"

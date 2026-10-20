@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Publicación del portal jurídico peruano De Ley.">
+  <title>Publicación | De Ley</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <style>
+    @font-face {
+      font-family: Inter;
+      src: url("assets/fonts/Inter-Variable.ttf") format("truetype");
+      font-style: normal;
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    :root {
+      color-scheme: dark;
+      --fondo: #0d1117;
+      --texto: #e6edf3;
+      --suave: #8b949e;
+      --borde: #30363d;
+      --acento: #58a6ff;
+      --superficie: #161b22;
+    }
+
+    :root[data-tema="claro"] {
+      color-scheme: light;
+      --fondo: #ffffff;
+      --texto: #1f2328;
+      --suave: #656d76;
+      --borde: #d1d9e0;
+      --acento: #0969da;
+      --superficie: #f6f8fa;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: var(--fondo); color: var(--texto); font-family: Inter, system-ui, sans-serif; }
+    header, main, footer { width: min(100% - 40px, 820px); margin-inline: auto; }
+    header { min-height: 76px; display: flex; align-items: center; justify-content: space-between; gap: 20px; border-bottom: 1px solid var(--borde); }
+    .marca img { display: block; width: clamp(140px, 24vw, 180px); height: auto; }
+    .marca-claro { display: none !important; }
+    :root[data-tema="claro"] .marca-oscuro { display: none; }
+    :root[data-tema="claro"] .marca-claro { display: block !important; }
+    button { padding: 9px 12px; border: 1px solid var(--borde); border-radius: 8px; background: var(--superficie); color: var(--texto); font: inherit; cursor: pointer; }
+    main { min-height: 70vh; padding-block: clamp(44px, 8vw, 80px); }
+    .volver { color: var(--acento); text-decoration: none; }
+    .etiqueta { margin: 36px 0 12px; color: var(--acento); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    h1 { margin: 0 0 18px; font-size: clamp(2.2rem, 6vw, 4rem); letter-spacing: -0.045em; line-height: 1.08; }
+    .resumen { color: var(--suave); font-size: 1.15rem; line-height: 1.7; }
+    .meta { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 24px 0 32px; color: var(--suave); font-size: 0.88rem; }
+    .detalle { padding: 22px 0; border-top: 1px solid var(--borde); }
+    .detalle h2 { margin: 0 0 10px; font-size: 1.08rem; }
+    .detalle p { margin: 0; color: var(--texto); line-height: 1.75; white-space: pre-line; }
+    .detalle a { color: var(--acento); overflow-wrap: anywhere; }
+    .nota { margin-top: 36px; padding: 16px; border-radius: 10px; background: var(--superficie); color: var(--suave); font-size: 0.86rem; line-height: 1.6; }
+    .estado { color: var(--suave); line-height: 1.7; }
+    footer { padding-block: 20px; border-top: 1px solid var(--borde); color: var(--suave); font-size: 0.82rem; }
+  </style>
+  <script>
+    const temaGuardado = localStorage.getItem("de-ley-tema");
+    if (temaGuardado === "claro" || temaGuardado === "oscuro") {
+      document.documentElement.dataset.tema = temaGuardado;
+    }
+  </script>
+  <script type="module" src="publicacion.js"></script>
+</head>
+<body>
+  <header>
+    <a class="marca" href="./" aria-label="Ir al inicio de De Ley">
+      <img class="marca-oscuro" src="assets/brand-de-ley-oscuro.png" alt="De Ley">
+      <img class="marca-claro" src="assets/brand-de-ley-claro.png" alt="" aria-hidden="true">
+    </a>
+    <button id="tema" type="button" aria-label="Cambiar tema">Modo claro</button>
+  </header>
+  <main>
+    <a class="volver" href="./">← Volver al portal</a>
+    <article id="contenido" aria-live="polite">
+      <p class="estado">Cargando publicación…</p>
+    </article>
+  </main>
+  <footer>De Ley · Portal jurídico peruano</footer>
+</body>
+</html>

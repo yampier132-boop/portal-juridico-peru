@@ -289,6 +289,9 @@
       transition: background-color 220ms ease, border-color 220ms ease;
     }
 
+    .vacio-contenido[hidden],
+    .seccion-card [hidden] { display: none; }
+
     .vacio-contenido strong {
       color: var(--acento);
       font-size: 0.9rem;
@@ -370,6 +373,46 @@
       font-size: 0.76rem;
       font-weight: 600;
     }
+
+    .lista-publicaciones {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      width: 100%;
+    }
+
+    .publicacion-enlace {
+      display: block;
+      padding-top: 12px;
+      border-top: 1px solid var(--borde);
+      color: var(--texto);
+      text-decoration: none;
+    }
+
+    .publicacion-enlace:hover strong { color: var(--acento); }
+
+    .publicacion-enlace strong {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.88rem;
+      line-height: 1.4;
+    }
+
+    .publicacion-enlace small {
+      display: block;
+      color: var(--suave);
+      font-size: 0.76rem;
+      line-height: 1.5;
+    }
+
+    .lista-publicaciones-recientes .publicacion-enlace {
+      padding: 16px;
+      border: 1px solid var(--borde);
+      border-radius: 9px;
+      background: var(--superficie);
+    }
+
+    .lista-publicaciones-recientes .publicacion-enlace strong { font-size: 0.98rem; }
 
     @media (min-width: 1050px) {
       .secciones-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -583,10 +626,11 @@
     <div class="secciones-contenido">
       <section class="seccion-contenido" aria-labelledby="recientes-titulo">
         <h2 id="recientes-titulo">Recién publicado</h2>
-        <div class="vacio-contenido">
+        <div class="vacio-contenido" id="recientes-vacio">
           <strong>Próximamente</strong>
           <p class="nota-vista">Aquí aparecerán las publicaciones más recientes del portal.</p>
         </div>
+        <div class="lista-publicaciones lista-publicaciones-recientes" id="publicaciones-recientes" aria-live="polite"></div>
       </section>
 
       <section class="seccion-contenido" aria-labelledby="consultado-titulo">
@@ -608,36 +652,43 @@
           <h3>Actualidad</h3>
           <p>Novedades y acontecimientos jurídicos, explicados con contexto y enlaces a sus fuentes.</p>
           <span>Publicaciones en preparación</span>
+          <div class="lista-publicaciones" data-lista-seccion="actualidad"></div>
         </article>
         <article class="seccion-card" id="normas">
           <h3>Normas</h3>
           <p>Legislación organizada y explicada, con referencias a fuentes oficiales.</p>
           <span>Publicaciones en preparación</span>
+          <div class="lista-publicaciones" data-lista-seccion="normas"></div>
         </article>
         <article class="seccion-card" id="jurisprudencia">
           <h3>Jurisprudencia</h3>
           <p>Decisiones judiciales y criterios relevantes con referencias a su fuente.</p>
           <span>Publicaciones en preparación</span>
+          <div class="lista-publicaciones" data-lista-seccion="jurisprudencia"></div>
         </article>
         <article class="seccion-card" id="modelos">
           <h3>Modelos y formatos</h3>
           <p>Documentos de referencia con indicaciones para su revisión y adaptación.</p>
           <span>Publicaciones en preparación</span>
+          <div class="lista-publicaciones" data-lista-seccion="modelos"></div>
         </article>
         <article class="seccion-card" id="guias">
           <h3>Guías</h3>
           <p>Explicaciones ordenadas para entender trámites y procedimientos.</p>
           <span>Publicaciones en preparación</span>
+          <div class="lista-publicaciones" data-lista-seccion="guias"></div>
         </article>
         <article class="seccion-card" id="investigacion">
           <h3>Investigación</h3>
           <p>Estudios jurídicos que desarrollan preguntas, fuentes y argumentos.</p>
           <span>Publicaciones en preparación</span>
+          <div class="lista-publicaciones" data-lista-seccion="investigacion"></div>
         </article>
         <article class="seccion-card" id="opinion">
           <h3>Opinión</h3>
           <p>Perspectivas y comentarios de autor sobre temas jurídicos.</p>
           <span>Publicaciones en preparación</span>
+          <div class="lista-publicaciones" data-lista-seccion="opinion"></div>
         </article>
       </div>
     </section>
@@ -681,6 +732,52 @@
       document.documentElement.dataset.tema = tema;
       localStorage.setItem("de-ley-tema", tema);
       actualizarBotonTema(tema);
+    });
+
+    function crearEnlacePublicacion(publicacion) {
+      const enlace = document.createElement("a");
+      enlace.className = "publicacion-enlace";
+      enlace.href = `publicacion.html?id=${encodeURIComponent(publicacion.id)}`;
+
+      const titulo = document.createElement("strong");
+      titulo.textContent = publicacion.title;
+      const resumen = document.createElement("small");
+      resumen.textContent = publicacion.summary;
+      const meta = document.createElement("small");
+      meta.textContent = `${publicacion.typeName} · ${publicacion.materia} · ${publicacion.publishedAt}`;
+
+      enlace.append(titulo, resumen, meta);
+      return enlace;
+    }
+
+    async function cargarPublicaciones() {
+      const respuesta = await fetch("contenido/publicaciones.json", { cache: "no-cache" });
+      if (!respuesta.ok) throw new Error(`No se pudieron cargar las publicaciones (HTTP ${respuesta.status}).`);
+      const publicaciones = await respuesta.json();
+      if (!Array.isArray(publicaciones)) throw new Error("El archivo de publicaciones no tiene el formato esperado.");
+
+      const ordenadas = publicaciones
+        .filter((publicacion) => publicacion && typeof publicacion.id === "string")
+        .sort((a, b) => String(b.publishedAt).localeCompare(String(a.publishedAt)));
+
+      const recientes = document.querySelector("#publicaciones-recientes");
+      if (ordenadas.length) {
+        document.querySelector("#recientes-vacio").hidden = true;
+        ordenadas.slice(0, 3).forEach((publicacion) => recientes.append(crearEnlacePublicacion(publicacion)));
+      }
+
+      document.querySelectorAll("[data-lista-seccion]").forEach((lista) => {
+        const entradas = ordenadas.filter((publicacion) => publicacion.type === lista.dataset.listaSeccion).slice(0, 3);
+        if (!entradas.length) return;
+        lista.closest(".seccion-card").querySelector(":scope > span").hidden = true;
+        entradas.forEach((publicacion) => lista.append(crearEnlacePublicacion(publicacion)));
+      });
+    }
+
+    cargarPublicaciones().catch((error) => {
+      const mensaje = document.querySelector("#recientes-vacio .nota-vista");
+      document.querySelector("#recientes-vacio strong").textContent = "No se pudieron cargar las publicaciones";
+      mensaje.textContent = error.message;
     });
   </script>
 </body>

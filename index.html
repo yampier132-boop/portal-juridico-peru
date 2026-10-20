@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Portal jurídico peruano</title>
+  <title>De Ley | Portal jurídico peruano</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
   <style>
     @font-face {
       font-family: Inter;
@@ -15,20 +16,40 @@
 
     :root {
       color-scheme: dark;
-      --fondo: #000;
+      --fondo: #111412;
       --texto: #f5f5f5;
       --suave: #a1a1aa;
-      --borde: #27272a;
+      --borde: #2b312d;
       --acento: #34d399;
+      --acento-contraste: #06281d;
+      --acento-borde: #3b443e;
+      --acento-fondo: #1a1f1b;
+      --superficie: #191d1a;
+    }
+
+    :root[data-tema="claro"] {
+      color-scheme: light;
+      --fondo: #f5f7f5;
+      --texto: #18211c;
+      --suave: #5e6b63;
+      --borde: #dce4de;
+      --acento: #087f5b;
+      --acento-contraste: #fff;
+      --acento-borde: #087f5b55;
+      --acento-fondo: #087f5b12;
+      --superficie: #fff;
     }
 
     * { box-sizing: border-box; }
+
+    html, body { min-height: 100%; }
 
     body {
       margin: 0;
       background: var(--fondo);
       color: var(--texto);
       font-family: Inter, system-ui, sans-serif;
+      transition: background-color 220ms ease, color 220ms ease;
     }
 
     header, main, footer {
@@ -37,17 +58,149 @@
     }
 
     header {
-      min-height: 72px;
-      display: flex;
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 20px;
       align-items: center;
-      justify-content: space-between;
       border-bottom: 1px solid var(--borde);
+      transition: border-color 220ms ease;
     }
 
-    .marca { font-weight: 600; letter-spacing: -0.03em; }
+    .marca {
+      display: inline-flex;
+      align-items: flex-start;
+      flex-direction: column;
+      color: var(--texto);
+      font-weight: 800;
+      font-size: clamp(1.2rem, 1.7vw, 1.4rem);
+      letter-spacing: -0.065em;
+      line-height: 0.78;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: color 180ms ease;
+    }
+
+    .marca-ley::after {
+      display: block;
+      width: 55%;
+      height: 3px;
+      margin-top: 5px;
+      background: var(--acento);
+      content: "";
+    }
+
+    .marca:hover { color: var(--acento); }
+
+    .menu {
+      min-width: 0;
+    }
+
+    .ramas-nav {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding-bottom: 12px;
+    }
+
+    .rama {
+      padding: 5px 10px;
+      border: 1px solid var(--borde);
+      border-radius: 999px;
+      background: var(--superficie);
+      color: var(--texto);
+      font: inherit;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .rama:disabled { cursor: not-allowed; opacity: 0.82; }
+
+    .menu-dropdown { display: contents; }
+
+    .menu-dropdown summary { display: none; }
+
+    .menu-links {
+      display: flex;
+      gap: 18px;
+    }
+
+    .menu-links span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 8px;
+      border-radius: 7px;
+      color: var(--suave);
+      font-size: 0.92rem;
+      white-space: nowrap;
+      transition: color 180ms ease, background-color 180ms ease;
+    }
+
+    .menu-links span:hover {
+      background: var(--acento);
+      color: var(--acento-contraste);
+    }
+
+    .suscripcion {
+      padding: 9px 12px;
+      border: 1px solid transparent;
+      border-radius: 8px;
+      background: var(--acento);
+      color: var(--acento-contraste);
+      font: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: filter 180ms ease, transform 180ms ease;
+    }
+
+    .suscripcion:disabled:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+    .acciones {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tema-toggle {
+      padding: 9px 12px;
+      border: 1px solid var(--borde);
+      border-radius: 8px;
+      background: var(--superficie);
+      color: var(--texto);
+      font: inherit;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+    }
+
+    .tema-toggle:hover {
+      border-color: transparent;
+      background: var(--acento);
+      color: var(--acento-contraste);
+      transform: translateY(-1px);
+    }
+
+    .suscripcion:disabled, .materia:disabled {
+      cursor: not-allowed;
+      opacity: 0.8;
+    }
+
     .pais { color: var(--suave); font-size: 0.9rem; }
 
-    main { padding-block: clamp(88px, 16vw, 160px); }
+    main {
+      padding-block: clamp(72px, 12vw, 120px) clamp(64px, 10vw, 104px);
+      animation: aparecer 650ms ease-out both;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
 
     .etiqueta {
       color: var(--acento);
@@ -58,10 +211,10 @@
     }
 
     h1 {
-      max-width: 720px;
+      max-width: 800px;
       margin: 20px 0;
       font-size: clamp(2.7rem, 8vw, 5.5rem);
-      letter-spacing: -0.065em;
+      letter-spacing: -0.025em;
       line-height: 1.02;
     }
 
@@ -72,29 +225,288 @@
       line-height: 1.7;
     }
 
+    .secciones-contenido {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+      margin-top: clamp(48px, 8vw, 80px);
+    }
+
+    .seccion-contenido {
+      min-width: 0;
+      padding-top: 16px;
+      border-top: 1px solid var(--borde);
+    }
+
+    .seccion-contenido h2 {
+      margin: 0 0 16px;
+      font-size: 1.1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .vacio-contenido {
+      min-height: 156px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 10px;
+      padding: 22px;
+      border: 1px dashed var(--borde);
+      border-radius: 12px;
+      background: var(--superficie);
+      transition: background-color 220ms ease, border-color 220ms ease;
+    }
+
+    .vacio-contenido strong {
+      color: var(--acento);
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .nota-vista {
+      margin: 0;
+      color: var(--suave);
+      font-size: 0.8rem;
+      line-height: 1.6;
+    }
+
     footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
       padding-block: 24px;
       border-top: 1px solid var(--borde);
       color: var(--suave);
       font-size: 0.85rem;
     }
+
+    .enlaces-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    @media (min-width: 901px) and (max-width: 1120px) {
+      header {
+        grid-template-columns: auto 1fr;
+        row-gap: 14px;
+        padding-block: 14px;
+      }
+
+      .menu {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        flex-wrap: wrap;
+        overflow: visible;
+      }
+
+      .acciones { grid-column: 2; grid-row: 1; justify-self: end; }
+    }
+
+    @media (max-width: 900px) {
+      header {
+        grid-template-columns: 1fr auto;
+        gap: 12px;
+        padding-block: 14px;
+      }
+
+      .menu {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
+      .ramas-nav { grid-row: 3; }
+
+      .acciones { grid-column: 2; grid-row: 1; }
+
+      footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .secciones-contenido { grid-template-columns: 1fr; }
+
+      .menu-dropdown {
+        display: block;
+        position: relative;
+      }
+
+      .menu-dropdown summary {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 12px;
+        border: 1px solid var(--borde);
+        border-radius: 8px;
+        color: var(--texto);
+        cursor: pointer;
+        font-size: 0.9rem;
+        list-style: none;
+      }
+
+      .menu-dropdown summary::-webkit-details-marker { display: none; }
+      .menu-dropdown summary::after { content: "+"; color: var(--acento); }
+      .menu-dropdown[open] summary::after { content: "−"; }
+
+      .menu-links {
+        position: absolute;
+        z-index: 2;
+        top: calc(100% + 8px);
+        left: 0;
+        display: none;
+        min-width: 220px;
+        padding: 8px;
+        border: 1px solid var(--borde);
+        border-radius: 10px;
+        background: var(--superficie);
+        box-shadow: 0 12px 30px #0003;
+      }
+
+      .menu-dropdown[open] .menu-links { display: grid; gap: 0; }
+
+      .menu-links span {
+        padding: 10px;
+        border-radius: 6px;
+        font-size: 0.95rem;
+      }
+
+      .menu-links span:hover {
+        background: var(--acento);
+        color: var(--acento-contraste);
+      }
+    }
+
+    @media (max-width: 480px) {
+      header { row-gap: 12px; }
+
+      .acciones { display: contents; }
+
+      .tema-toggle {
+        grid-column: 2;
+        grid-row: 1;
+      }
+
+      .suscripcion {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        justify-self: start;
+      }
+
+      .ramas-nav { grid-row: 4; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
   </style>
+  <script>
+    const temaGuardado = localStorage.getItem("de-ley-tema");
+    if (temaGuardado === "claro" || temaGuardado === "oscuro") {
+      document.documentElement.dataset.tema = temaGuardado;
+    }
+  </script>
 </head>
 <body>
   <header>
-    <div class="marca">Portal jurídico</div>
-    <div class="pais">Perú</div>
+    <a class="marca" href="#inicio">
+      <span>De</span>
+      <span class="marca-ley">Ley</span>
+    </a>
+    <nav class="menu" aria-label="Navegación principal">
+      <details class="menu-dropdown">
+        <summary>Secciones</summary>
+        <div class="menu-links">
+          <span>Actualidad</span>
+          <span>Normas</span>
+          <span>Jurisprudencia</span>
+          <span>Modelos y formatos</span>
+          <span>Guías</span>
+          <span>Investigación</span>
+          <span>Opinión</span>
+        </div>
+      </details>
+    </nav>
+    <nav class="ramas-nav" aria-label="Filtrar por rama del derecho">
+      <button class="rama" type="button" disabled>Penal</button>
+      <button class="rama" type="button" disabled>Civil</button>
+      <button class="rama" type="button" disabled>Constitucional</button>
+      <button class="rama" type="button" disabled>Laboral</button>
+      <button class="rama" type="button" disabled>Administrativo</button>
+    </nav>
+    <div class="acciones">
+      <button class="suscripcion" type="button" disabled>Suscríbete · Próximamente</button>
+      <button class="tema-toggle" id="tema-toggle" type="button" aria-label="Cambiar tema" aria-pressed="false">Modo claro</button>
+    </div>
   </header>
 
-  <main>
+  <main id="inicio">
     <p class="etiqueta">Un proyecto en construcción</p>
-    <h1>Derecho peruano, con claridad.</h1>
+    <h1>Derecho peruano, con claridad y método.</h1>
     <p class="descripcion">
       Actualidad, análisis y recursos para la comunidad jurídica del Perú.
       Este espacio crecerá paso a paso.
     </p>
+
+    <div class="secciones-contenido">
+      <section class="seccion-contenido" aria-labelledby="recientes-titulo">
+        <h2 id="recientes-titulo">Recién publicado</h2>
+        <div class="vacio-contenido">
+          <strong>Próximamente</strong>
+          <p class="nota-vista">Aquí aparecerán las publicaciones más recientes del portal.</p>
+        </div>
+      </section>
+
+      <section class="seccion-contenido" aria-labelledby="consultado-titulo">
+        <h2 id="consultado-titulo">Lo más consultado</h2>
+        <div class="vacio-contenido">
+          <strong>Próximamente</strong>
+          <p class="nota-vista">Destacaremos aquí los contenidos que más interesan a la comunidad.</p>
+        </div>
+      </section>
+    </div>
   </main>
 
-  <footer>Primera versión · Contenido próximamente</footer>
+  <footer>
+    <span>De Ley · Perú</span>
+    <nav class="enlaces-footer" aria-label="Enlaces del pie de página">
+      <span>Nosotros</span>
+      <span>Contacto</span>
+      <span>Política de privacidad</span>
+    </nav>
+  </footer>
+  <script>
+    const botonTema = document.getElementById("tema-toggle");
+    const menuMovil = document.querySelector(".menu-dropdown");
+    const vistaMovil = window.matchMedia("(max-width: 680px)");
+
+    function ajustarMenuPorPantalla() {
+      menuMovil.open = !vistaMovil.matches;
+    }
+
+    ajustarMenuPorPantalla();
+    vistaMovil.addEventListener("change", ajustarMenuPorPantalla);
+
+    function actualizarBotonTema(tema) {
+      const esClaro = tema === "claro";
+      botonTema.textContent = esClaro ? "Modo oscuro" : "Modo claro";
+      botonTema.setAttribute("aria-pressed", String(esClaro));
+    }
+
+    actualizarBotonTema(document.documentElement.dataset.tema || "oscuro");
+
+    botonTema.addEventListener("click", () => {
+      const tema = document.documentElement.dataset.tema === "claro" ? "oscuro" : "claro";
+      document.documentElement.dataset.tema = tema;
+      localStorage.setItem("de-ley-tema", tema);
+      actualizarBotonTema(tema);
+    });
+  </script>
 </body>
 </html>

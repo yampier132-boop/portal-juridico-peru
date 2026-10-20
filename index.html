@@ -16,28 +16,28 @@
 
     :root {
       color-scheme: dark;
-      --fondo: #111412;
-      --texto: #f5f5f5;
-      --suave: #a1a1aa;
-      --borde: #2b312d;
-      --acento: #34d399;
-      --acento-contraste: #06281d;
-      --acento-borde: #3b443e;
-      --acento-fondo: #1a1f1b;
-      --superficie: #191d1a;
+      --fondo: #0d1117;
+      --texto: #e6edf3;
+      --suave: #8b949e;
+      --borde: #30363d;
+      --acento: #58a6ff;
+      --acento-contraste: #061a33;
+      --acento-borde: #30363d;
+      --acento-fondo: #1f6feb;
+      --superficie: #161b22;
     }
 
     :root[data-tema="claro"] {
       color-scheme: light;
-      --fondo: #f5f7f5;
-      --texto: #18211c;
-      --suave: #5e6b63;
-      --borde: #dce4de;
-      --acento: #087f5b;
-      --acento-contraste: #fff;
-      --acento-borde: #087f5b55;
-      --acento-fondo: #087f5b12;
-      --superficie: #fff;
+      --fondo: #ffffff;
+      --texto: #1f2328;
+      --suave: #656d76;
+      --borde: #d1d9e0;
+      --acento: #0969da;
+      --acento-contraste: #ffffff;
+      --acento-borde: #d1d9e0;
+      --acento-fondo: #0969da;
+      --superficie: #f6f8fa;
     }
 
     * { box-sizing: border-box; }
@@ -53,7 +53,7 @@
     }
 
     header, main, footer {
-      width: min(100% - 40px, 960px);
+      width: min(100% - 48px, 1240px);
       margin-inline: auto;
     }
 
@@ -68,29 +68,21 @@
     }
 
     .marca {
-      display: inline-flex;
-      align-items: flex-start;
-      flex-direction: column;
-      color: var(--texto);
-      font-weight: 800;
-      font-size: clamp(1.2rem, 1.7vw, 1.4rem);
-      letter-spacing: -0.065em;
-      line-height: 0.78;
-      text-decoration: none;
-      white-space: nowrap;
-      transition: color 180ms ease;
-    }
-
-    .marca-ley::after {
       display: block;
-      width: 55%;
-      height: 3px;
-      margin-top: 5px;
-      background: var(--acento);
-      content: "";
+      width: fit-content;
+      text-decoration: none;
     }
 
-    .marca:hover { color: var(--acento); }
+    .marca-imagen {
+      display: block;
+      width: clamp(150px, 18vw, 190px);
+      height: auto;
+    }
+
+    .marca-imagen-claro { display: none; }
+
+    :root[data-tema="claro"] .marca-imagen-oscuro { display: none; }
+    :root[data-tema="claro"] .marca-imagen-claro { display: block; }
 
     .menu {
       min-width: 0;
@@ -127,7 +119,7 @@
       gap: 18px;
     }
 
-    .menu-links span {
+    .menu-links a {
       display: inline-flex;
       align-items: center;
       min-height: 34px;
@@ -136,10 +128,11 @@
       color: var(--suave);
       font-size: 0.92rem;
       white-space: nowrap;
+      text-decoration: none;
       transition: color 180ms ease, background-color 180ms ease;
     }
 
-    .menu-links span:hover {
+    .menu-links a:hover {
       background: var(--acento);
       color: var(--acento-contraste);
     }
@@ -193,7 +186,7 @@
     .pais { color: var(--suave); font-size: 0.9rem; }
 
     main {
-      padding-block: clamp(72px, 12vw, 120px) clamp(64px, 10vw, 104px);
+      padding-block: clamp(40px, 6vw, 72px) clamp(56px, 7vw, 88px);
       animation: aparecer 650ms ease-out both;
     }
 
@@ -225,11 +218,50 @@
       line-height: 1.7;
     }
 
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.7fr);
+      align-items: end;
+      gap: clamp(32px, 7vw, 96px);
+      padding-bottom: clamp(40px, 6vw, 72px);
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .hero h1 {
+      max-width: 820px;
+      margin: 16px 0;
+      font-size: clamp(2.8rem, 6.4vw, 5.6rem);
+      letter-spacing: -0.025em;
+      line-height: 1.02;
+    }
+
+    .hero-panel {
+      padding: 22px;
+      border-radius: 12px;
+      background: var(--superficie);
+    }
+
+    .hero-panel-label {
+      margin: 0 0 12px;
+      color: var(--acento);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .hero-panel p:last-child {
+      margin: 0;
+      color: var(--suave);
+      font-size: 0.92rem;
+      line-height: 1.65;
+    }
+
     .secciones-contenido {
       display: grid;
-      grid-template-columns: 1.2fr 0.8fr;
-      gap: 16px;
-      margin-top: clamp(48px, 8vw, 80px);
+      grid-template-columns: minmax(0, 1.6fr) minmax(260px, 0.8fr);
+      gap: 32px;
+      margin-top: clamp(36px, 5vw, 60px);
     }
 
     .seccion-contenido {
@@ -270,6 +302,79 @@
       line-height: 1.6;
     }
 
+    .directorio { margin-top: clamp(48px, 7vw, 80px); }
+
+    .directorio-cabecera {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+
+    .directorio-cabecera h2 {
+      margin: 0;
+      font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+      letter-spacing: -0.04em;
+    }
+
+    .directorio-cabecera p {
+      max-width: 420px;
+      margin: 0;
+      color: var(--suave);
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .secciones-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .seccion-card {
+      min-height: 176px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: 20px;
+      border: 1px solid var(--borde);
+      border-radius: 12px;
+      background: var(--superficie);
+      color: var(--texto);
+      text-decoration: none;
+      transition: background-color 180ms ease, transform 180ms ease;
+    }
+
+    .seccion-card:hover {
+      background: var(--acento-fondo);
+      transform: translateY(-2px);
+    }
+
+    .seccion-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      letter-spacing: -0.02em;
+    }
+
+    .seccion-card p {
+      margin: 0 0 16px;
+      color: var(--suave);
+      font-size: 0.84rem;
+      line-height: 1.55;
+    }
+
+    .seccion-card span {
+      margin-top: auto;
+      color: var(--acento);
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    @media (min-width: 1050px) {
+      .secciones-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    }
+
     footer {
       display: flex;
       align-items: center;
@@ -305,6 +410,9 @@
     }
 
     @media (max-width: 900px) {
+      .menu-links { flex-wrap: wrap; gap: 4px; }
+      .menu-links a { padding-inline: 5px; font-size: 0.84rem; }
+
       header {
         grid-template-columns: 1fr auto;
         gap: 12px;
@@ -327,7 +435,13 @@
     }
 
     @media (max-width: 680px) {
-      .secciones-contenido { grid-template-columns: 1fr; }
+      header, main, footer { width: min(100% - 32px, 1240px); }
+
+      .hero, .secciones-contenido { grid-template-columns: 1fr; }
+      .hero { gap: 24px; }
+      .hero-panel { max-width: none; }
+      .secciones-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .directorio-cabecera { align-items: flex-start; flex-direction: column; }
 
       .menu-dropdown {
         display: block;
@@ -367,13 +481,13 @@
 
       .menu-dropdown[open] .menu-links { display: grid; gap: 0; }
 
-      .menu-links span {
+      .menu-links a {
         padding: 10px;
         border-radius: 6px;
         font-size: 0.95rem;
       }
 
-      .menu-links span:hover {
+      .menu-links a:hover {
         background: var(--acento);
         color: var(--acento-contraste);
       }
@@ -381,6 +495,10 @@
 
     @media (max-width: 480px) {
       header { row-gap: 12px; }
+
+      .marca-imagen { width: clamp(130px, 38vw, 160px); }
+      .secciones-grid { grid-template-columns: 1fr; }
+      .seccion-card { min-height: 148px; }
 
       .acciones { display: contents; }
 
@@ -416,24 +534,24 @@
 <body>
   <header>
     <a class="marca" href="#inicio">
-      <span>De</span>
-      <span class="marca-ley">Ley</span>
+      <img class="marca-imagen marca-imagen-oscuro" src="assets/brand-de-ley-oscuro.png" alt="De Ley">
+      <img class="marca-imagen marca-imagen-claro" src="assets/brand-de-ley-claro.png" alt="" aria-hidden="true">
     </a>
     <nav class="menu" aria-label="Navegación principal">
       <details class="menu-dropdown">
         <summary>Secciones</summary>
         <div class="menu-links">
-          <span>Actualidad</span>
-          <span>Normas</span>
-          <span>Jurisprudencia</span>
-          <span>Modelos y formatos</span>
-          <span>Guías</span>
-          <span>Investigación</span>
-          <span>Opinión</span>
+          <a href="#actualidad">Actualidad</a>
+          <a href="#normas">Normas</a>
+          <a href="#jurisprudencia">Jurisprudencia</a>
+          <a href="#modelos">Modelos y formatos</a>
+          <a href="#guias">Guías</a>
+          <a href="#investigacion">Investigación</a>
+          <a href="#opinion">Opinión</a>
         </div>
       </details>
     </nav>
-    <nav class="ramas-nav" aria-label="Filtrar por rama del derecho">
+    <nav class="ramas-nav" aria-label="Explorar por materia">
       <button class="rama" type="button" disabled>Penal</button>
       <button class="rama" type="button" disabled>Civil</button>
       <button class="rama" type="button" disabled>Constitucional</button>
@@ -447,12 +565,20 @@
   </header>
 
   <main id="inicio">
-    <p class="etiqueta">Un proyecto en construcción</p>
-    <h1>Derecho peruano, con claridad y método.</h1>
-    <p class="descripcion">
-      Actualidad, análisis y recursos para la comunidad jurídica del Perú.
-      Este espacio crecerá paso a paso.
-    </p>
+    <section class="hero" aria-labelledby="portada-titulo">
+      <div>
+        <p class="etiqueta">Un proyecto en construcción</p>
+        <h1 id="portada-titulo">Derecho peruano, con claridad y método.</h1>
+        <p class="descripcion">
+          Actualidad, análisis y recursos para la comunidad jurídica del Perú.
+          Este espacio crecerá paso a paso.
+        </p>
+      </div>
+      <aside class="hero-panel">
+        <p class="hero-panel-label">De Ley · Perú</p>
+        <p>Un espacio para consultar normas, comprender decisiones judiciales y acercarse a la investigación jurídica.</p>
+      </aside>
+    </section>
 
     <div class="secciones-contenido">
       <section class="seccion-contenido" aria-labelledby="recientes-titulo">
@@ -471,6 +597,50 @@
         </div>
       </section>
     </div>
+
+    <section class="directorio" id="directorio" aria-labelledby="directorio-titulo">
+      <div class="directorio-cabecera">
+        <h2 id="directorio-titulo">Explora el portal</h2>
+        <p>Encuentra cada tipo de contenido en su sección. Las publicaciones se incorporarán cuando estén preparadas y verificadas.</p>
+      </div>
+      <div class="secciones-grid">
+        <article class="seccion-card" id="actualidad">
+          <h3>Actualidad</h3>
+          <p>Novedades y acontecimientos jurídicos, explicados con contexto y enlaces a sus fuentes.</p>
+          <span>Publicaciones en preparación</span>
+        </article>
+        <article class="seccion-card" id="normas">
+          <h3>Normas</h3>
+          <p>Legislación organizada y explicada, con referencias a fuentes oficiales.</p>
+          <span>Publicaciones en preparación</span>
+        </article>
+        <article class="seccion-card" id="jurisprudencia">
+          <h3>Jurisprudencia</h3>
+          <p>Decisiones judiciales y criterios relevantes con referencias a su fuente.</p>
+          <span>Publicaciones en preparación</span>
+        </article>
+        <article class="seccion-card" id="modelos">
+          <h3>Modelos y formatos</h3>
+          <p>Documentos de referencia con indicaciones para su revisión y adaptación.</p>
+          <span>Publicaciones en preparación</span>
+        </article>
+        <article class="seccion-card" id="guias">
+          <h3>Guías</h3>
+          <p>Explicaciones ordenadas para entender trámites y procedimientos.</p>
+          <span>Publicaciones en preparación</span>
+        </article>
+        <article class="seccion-card" id="investigacion">
+          <h3>Investigación</h3>
+          <p>Estudios jurídicos que desarrollan preguntas, fuentes y argumentos.</p>
+          <span>Publicaciones en preparación</span>
+        </article>
+        <article class="seccion-card" id="opinion">
+          <h3>Opinión</h3>
+          <p>Perspectivas y comentarios de autor sobre temas jurídicos.</p>
+          <span>Publicaciones en preparación</span>
+        </article>
+      </div>
+    </section>
   </main>
 
   <footer>
@@ -492,6 +662,11 @@
 
     ajustarMenuPorPantalla();
     vistaMovil.addEventListener("change", ajustarMenuPorPantalla);
+    menuMovil.querySelectorAll(".menu-links a").forEach((enlace) => {
+      enlace.addEventListener("click", () => {
+        if (vistaMovil.matches) menuMovil.open = false;
+      });
+    });
 
     function actualizarBotonTema(tema) {
       const esClaro = tema === "claro";

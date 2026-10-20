@@ -14,7 +14,8 @@ Este documento guarda los acuerdos del proyecto para consultarlos antes de hacer
 - El pie de página mostrará Nosotros, Contacto y Política de privacidad.
 - La página de inicio conservará el mensaje provisional y presentará, debajo, las secciones «Recién publicado» y «Lo más consultado».
 - El titular provisional de la portada será «Derecho peruano, con claridad y método», para destacar el enfoque de investigación.
-- La cabecera usará el logotipo tipográfico «De» sobre «Ley», con un subrayado verde esmeralda inspirado en la propuesta del usuario.
+- La portada aprovechará un ancho mayor y mostrará un directorio con las siete secciones principales. Mientras no haya publicaciones verificadas, se indicará claramente que el contenido está en preparación; no se crearán artículos jurídicos ficticios para llenar los espacios.
+- La cabecera usará el logotipo tipográfico horizontal «De Ley», con subrayado verde esmeralda basado en la imagen aportada por el usuario y sin fondo. Habrá una versión legible para cada tema.
 - El favicon usará un icono minimalista de burbuja de diálogo con el signo §, en verde esmeralda sobre fondo blanco.
 - En pantallas pequeñas, las secciones del menú se mostrarán en un desplegable.
 - La portada puede mostrar estas secciones como vista previa antes de que haya publicaciones reales; no se inventará contenido de ejemplo.
@@ -23,11 +24,12 @@ Este documento guarda los acuerdos del proyecto para consultarlos antes de hacer
 
 ### Diseño y experiencia
 
-- La dirección visual será minimalista, con fondo oscuro carbón AMOLED (`#111412`) en lugar de negro puro. El tono carbón evita que el fondo se confunda con piezas o documentos negros que se publiquen en el portal, y mantiene una presentación moderna, clara y ordenada.
-- El color de acento será verde esmeralda (`#34d399`), sobre el fondo oscuro carbón.
-- Los elementos destacados y las opciones seleccionadas podrán usar relleno verde sólido; los bordes se mantendrán en tonos neutros. Se evitan los bordes verdes porque dan una apariencia demasiado informática y menos jurídica.
+- La dirección visual será minimalista y usará la paleta inspirada en GitHub, aprobada por el usuario, conservando el diseño general del portal.
+- El modo oscuro usará fondo `#0d1117`, superficie `#161b22`, texto `#e6edf3`, texto secundario `#8b949e`, bordes `#30363d` y acento azul `#58a6ff`.
+- El modo claro usará fondo `#ffffff`, superficie `#f6f8fa`, texto `#1f2328`, texto secundario `#656d76`, bordes `#d1d9e0` y acento azul `#0969da`.
+- Los bordes serán neutros; los controles destacados usarán relleno azul sólido. Se evitan los bordes de color porque dan una apariencia demasiado informática.
 - La tipografía será Inter en todo el sitio. La fuente se guardará en el repositorio con su licencia OFL para no depender de un proveedor externo; las fuentes del sistema serán la alternativa si no se puede cargar.
-- El sitio tendrá modo oscuro AMOLED y modo claro. El selector cambiará el tema de manera global y recordará la preferencia en el navegador.
+- El sitio tendrá modo oscuro carbón y modo claro. El selector cambiará el tema de manera global y recordará la preferencia en el navegador.
 - Linear sirve como referencia de claridad y organización, y Raycast como referencia de modernidad. Son inspiración general: no se copiarán sus marcas, diseños, textos ni imágenes.
 - El repositorio ya tiene una primera página publicada en GitHub Pages. Por ahora, esa página es una versión inicial con textos provisionales.
 - El modo noche para documentos PDF es una función futura; no forma parte de la página inicial actual.

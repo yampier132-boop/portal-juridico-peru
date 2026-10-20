@@ -21,6 +21,10 @@ Este documento guarda los acuerdos del proyecto para consultarlos antes de hacer
 - La búsqueda interna del portal encontrará publicaciones por título, resumen, materias y campos de contenido, incluidas las etiquetas.
 - Las publicaciones de Jurisprudencia tendrán una imagen de portada, texto alternativo y una página individual con metadatos sociales para compartir el enlace.
 - El panel preparará un prompt de imagen personalizado con los datos editoriales del caso; la imagen se generará fuera del panel y luego se subirá como JPG, PNG o WebP. El prompt debe evitar nombres y datos confidenciales.
+- Las páginas de Jurisprudencia mostrarán la información de identificación de la decisión en una ficha lateral adhesiva en escritorio y encima del artículo en móvil; el cuerpo tendrá Problema jurídico, Criterio, Análisis y Referencias.
+- La ficha del artículo ofrecerá una tabla de contenido solo cuando haya tres o más secciones de cuerpo. El texto se justificará con separación silábica en escritorio y se alineará a la izquierda en móvil.
+- Las páginas de Jurisprudencia usarán URLs legibles por título, bajo `/jurisprudencia/`, y las etiquetas visibles enlazarán a la búsqueda del portal.
+- Las fechas visibles para lectores usarán el formato «16 de septiembre de 2026» y la línea de autor mostrará autor, materias y fecha.
 - El panel de administración no se enlazará en la navegación pública. El acceso se protegerá con inicio de sesión de GitHub y una lista de autorización del lado del servidor; no se guardará una contraseña en la página.
 - Se mantendrá la web pública en GitHub Pages. Un servicio Cloudflare Worker verificará al administrador y guardará publicaciones validadas en el repositorio; GitHub Pages las mostrará al completar su despliegue.
 - La cabecera usará el logotipo tipográfico horizontal «De Ley», con subrayado verde esmeralda basado en la imagen aportada por el usuario y sin fondo. Habrá una versión legible para cada tema.

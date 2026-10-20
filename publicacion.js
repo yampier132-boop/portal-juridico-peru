@@ -52,11 +52,16 @@ const opcionesCampos = {
   },
 };
 
+const nombresMeses = [
+  "enero", "febrero", "marzo", "abril", "mayo", "junio",
+  "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre",
+];
+
 function formatDate(value) {
   const date = new Date(`${value}T00:00:00`);
   return Number.isNaN(date.valueOf())
     ? value
-    : new Intl.DateTimeFormat("es-PE", { dateStyle: "long" }).format(date);
+    : `${date.getDate()} de ${nombresMeses[date.getMonth()]} de ${date.getFullYear()}`;
 }
 
 function appendValue(container, value, isUrl = false) {
@@ -91,6 +96,37 @@ function appendValue(container, value, isUrl = false) {
   container.append(paragraph);
 }
 
+function crearDetalle(titulo, valor, opciones = {}) {
+  if (valor === undefined || valor === null || valor === "") return null;
+  const section = document.createElement("section");
+  section.className = `detalle${opciones.texto ? " texto-articulo" : ""}`;
+  if (opciones.id) section.id = opciones.id;
+  const heading = document.createElement("h2");
+  heading.textContent = titulo;
+  section.append(heading);
+  appendValue(section, valor, opciones.url || false);
+  return section;
+}
+
+function crearFicha(titulo, valor, fecha = false) {
+  if (!valor) return null;
+  const item = document.createElement("div");
+  const label = document.createElement("dt");
+  label.textContent = titulo;
+  const content = document.createElement("dd");
+  content.textContent = fecha ? formatDate(valor) : valor;
+  item.append(label, content);
+  return item;
+}
+
+function crearEtiqueta(tag) {
+  const link = document.createElement("a");
+  link.className = "etiqueta-palabra";
+  link.href = `./?buscar=${encodeURIComponent(tag)}#buscar-publicaciones`;
+  link.textContent = tag;
+  return link;
+}
+
 function displayPublication(publication) {
   document.title = `${publication.title} | De Ley`;
   const description = document.querySelector('meta[name="description"]');
@@ -118,15 +154,11 @@ function displayPublication(publication) {
   summary.textContent = publication.summary;
 
   const metadata = document.createElement("div");
-  metadata.className = "meta";
+  metadata.className = "linea-autor";
   const materiasPublicacion = Array.isArray(publication.materias)
     ? publication.materias.join(", ")
     : publication.materia;
-  [publication.author, materiasPublicacion, formatDate(publication.publishedAt)].forEach((value) => {
-    const item = document.createElement("span");
-    item.textContent = value;
-    metadata.append(item);
-  });
+  metadata.textContent = `Por ${publication.author} · ${materiasPublicacion} · ${formatDate(publication.publishedAt)}`;
 
   article.append(category, title, summary, metadata);
   if (publication.coverUrl) {
@@ -136,26 +168,105 @@ function displayPublication(publication) {
     cover.alt = publication.coverAlt || "";
     article.append(cover);
   }
-  Object.entries(publication.details || {}).forEach(([id, value]) => {
-    if (!value) return;
-    const section = document.createElement("section");
-    section.className = "detalle";
-    const heading = document.createElement("h2");
-    heading.textContent = etiquetasCampos[id] || id.replace(/([A-Z])/g, " $1").replace(/^./, (first) => first.toUpperCase());
-    section.append(heading);
-    const displayedValue = opcionesCampos[id]?.[value] || value;
-    appendValue(section, displayedValue, id.toLowerCase().includes("url") || id.toLowerCase().includes("fuente"));
-    article.append(section);
-  });
+  if (publication.type === "jurisprudencia") {
+    const tags = publication.details?.etiquetas;
+    if (Array.isArray(tags) && tags.length) {
+      const tagNavigation = document.createElement("nav");
+      tagNavigation.className = "etiquetas";
+      tagNavigation.setAttribute("aria-label", "Etiquetas de la publicación");
+      tags.forEach((tag) => tagNavigation.append(crearEtiqueta(tag)));
+      article.append(tagNavigation);
+    }
 
-  if (publication.sourceUrl) {
-    const source = document.createElement("section");
-    source.className = "detalle";
-    const heading = document.createElement("h2");
-    heading.textContent = publication.sourceName || "Fuente principal";
-    source.append(heading);
-    appendValue(source, publication.sourceUrl, true);
-    article.append(source);
+    const details = publication.details || {};
+    const bodyFields = [
+      ["problemaJuridico", "Problema jurídico", "problema-juridico"],
+      ["criterio", "Criterio", "criterio"],
+      ["analisis", "Análisis", "analisis"],
+      ["referenciasApa", "Referencias", "referencias"],
+    ].map(([id, label, anchor]) => ({ id, label, anchor, value: details[id] }))
+      .filter((field) => field.value);
+    const layout = document.createElement("div");
+    layout.className = "estructura-articulo";
+    const aside = document.createElement("aside");
+    aside.className = "barra-lateral";
+    aside.setAttribute("aria-label", "Ficha de la decisión");
+    const fixed = document.createElement("div");
+    fixed.className = "ficha-fija";
+    const factCard = document.createElement("section");
+    factCard.className = "ficha-decision";
+    const factHeading = document.createElement("h2");
+    factHeading.textContent = "Datos de la decisión";
+    const factList = document.createElement("dl");
+    const firmness = opcionesCampos.firmeza[details.firmeza] || details.firmeza;
+    [
+      crearFicha("Órgano", details.organo),
+      crearFicha("Expediente", details.expediente),
+      crearFicha("Instancia", details.instancia),
+      crearFicha("Firmeza", firmness),
+      crearFicha("Fecha de la decisión", details.fechaDecision, true),
+    ].filter(Boolean).forEach((fact) => factList.append(fact));
+    factCard.append(factHeading, factList);
+    fixed.append(factCard);
+
+    if (bodyFields.length >= 3) {
+      const table = document.createElement("nav");
+      table.className = "tabla-contenido";
+      table.setAttribute("aria-label", "Tabla de contenido");
+      const tableHeading = document.createElement("h2");
+      tableHeading.textContent = "En esta página";
+      const list = document.createElement("ol");
+      bodyFields.forEach((field) => {
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `#${field.anchor}`;
+        link.textContent = field.label;
+        item.append(link);
+        list.append(item);
+      });
+      table.append(tableHeading, list);
+      fixed.append(table);
+    }
+    aside.append(fixed);
+
+    const body = document.createElement("div");
+    body.className = "cuerpo-articulo";
+    bodyFields.forEach((field) => {
+      body.append(crearDetalle(field.label, field.value, { id: field.anchor, texto: true }));
+    });
+    if (details.fuenteOficial || details.fuenteSecundaria) {
+      const sources = document.createElement("details");
+      sources.className = "fuentes-articulo";
+      const summaryElement = document.createElement("summary");
+      summaryElement.textContent = "Fuentes de consulta";
+      sources.append(summaryElement);
+      [["Fuente oficial", details.fuenteOficial], ["Fuente secundaria", details.fuenteSecundaria]]
+        .filter(([, url]) => url)
+        .forEach(([label, url]) => {
+          const paragraph = document.createElement("p");
+          const strong = document.createElement("strong");
+          strong.textContent = `${label}: `;
+          paragraph.append(strong);
+          appendValue(paragraph, url, true);
+          sources.append(paragraph);
+        });
+      body.append(sources);
+    }
+    layout.append(aside, body);
+    article.append(layout);
+  } else {
+    Object.entries(publication.details || {}).forEach(([id, value]) => {
+      if (!value) return;
+      const label = etiquetasCampos[id] || id.replace(/([A-Z])/g, " $1").replace(/^./, (first) => first.toUpperCase());
+      const displayedValue = opcionesCampos[id]?.[value] || (id.toLowerCase().includes("fecha") ? formatDate(value) : value);
+      const section = crearDetalle(label, displayedValue, { url: id.toLowerCase().includes("url") || id.toLowerCase().includes("fuente") });
+      if (section) article.append(section);
+    });
+
+    if (publication.sourceUrl) {
+      const source = crearDetalle(publication.sourceName || "Fuente principal", publication.sourceUrl, { url: true });
+      if (source) article.append(source);
+    }
   }
 
   const notice = document.createElement("p");

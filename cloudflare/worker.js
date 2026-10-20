@@ -269,10 +269,23 @@ async function savePublication(env, publication, imageBytes, imageType) {
   const { publications, sha } = await readPublications(env);
   if (!Array.isArray(publications)) throw new Error("El archivo de publicaciones no tiene el formato esperado.");
   if (imageBytes) {
+    const publicationType = tiposPublicacion.find((item) => item.id === publication.type);
+    if (!publicationType) throw new Error("El tipo de publicación no está reconocido.");
+    const existingSlugs = new Set(
+      publications
+        .filter((item) => item.type === publication.type)
+        .map((item) => item.slug),
+    );
+    const baseSlug = publication.slug;
+    let suffix = 2;
+    while (existingSlugs.has(publication.slug)) {
+      publication.slug = `${baseSlug.slice(0, 80 - String(suffix).length - 1)}-${suffix}`;
+      suffix += 1;
+    }
     const extension = { "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" }[imageType];
     const imagePath = `assets/covers/${publication.id}.${extension}`;
     const siteUrl = `https://${env.GITHUB_OWNER}.github.io/${env.GITHUB_REPO}`;
-    const publicPath = `/publicaciones/${publication.id}-${publication.slug}/`;
+    const publicPath = `/${publication.type}/${publication.slug}/`;
     await writeGithubFile(
       env,
       imagePath,
@@ -281,10 +294,9 @@ async function savePublication(env, publication, imageBytes, imageType) {
     );
     publication.coverUrl = `${siteUrl}/${imagePath}`;
     publication.publicUrl = `${siteUrl}${publicPath}`;
-    const type = tiposPublicacion.find((item) => item.id === publication.type);
     const pageData = {
       ...publication,
-      detailFields: type.campos.map((field) => {
+      detailFields: publicationType.campos.map((field) => {
         const value = publication.details[field.id];
         if (field.tipo !== "select") return { label: field.etiqueta, type: field.tipo, value };
         const option = field.opciones.find((item) => (typeof item === "string" ? item : item.valor) === value);

@@ -1,0 +1,19 @@
+{% assign fecha_t = include.fecha | date: "%Y-%m-%d" %}
+{% assign dia = fecha_t | date: "%-d" %}
+{% assign mes = fecha_t | date: "%m" %}
+{% assign anio = fecha_t | date: "%Y" %}
+{% case mes %}
+  {% when "01" %}{% assign nombre_mes = "enero" %}
+  {% when "02" %}{% assign nombre_mes = "febrero" %}
+  {% when "03" %}{% assign nombre_mes = "marzo" %}
+  {% when "04" %}{% assign nombre_mes = "abril" %}
+  {% when "05" %}{% assign nombre_mes = "mayo" %}
+  {% when "06" %}{% assign nombre_mes = "junio" %}
+  {% when "07" %}{% assign nombre_mes = "julio" %}
+  {% when "08" %}{% assign nombre_mes = "agosto" %}
+  {% when "09" %}{% assign nombre_mes = "septiembre" %}
+  {% when "10" %}{% assign nombre_mes = "octubre" %}
+  {% when "11" %}{% assign nombre_mes = "noviembre" %}
+  {% when "12" %}{% assign nombre_mes = "diciembre" %}
+{% endcase %}
+{{ dia }} de {{ nombre_mes }} de {{ anio }}

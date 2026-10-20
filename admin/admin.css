@@ -40,6 +40,7 @@ h2 { margin-bottom: 8px; font-size: 1.35rem; letter-spacing: -0.03em; }
 .aviso strong { color: var(--texto); }
 
 .campo { display: grid; gap: 8px; margin-bottom: 18px; font-size: 0.92rem; font-weight: 600; }
+.campo[hidden] { display: none; }
 .campo input, .campo select, .campo textarea {
   width: 100%;
   padding: 11px 12px;
